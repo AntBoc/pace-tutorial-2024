@@ -1,0 +1,66 @@
+variable latconst equal 4.05
+
+# ---------- Initialize Simulation --------------------- 
+clear 
+units metal 
+dimension 3 
+boundary p p p 
+atom_style atomic 
+atom_modify map array
+
+# ---------- Create Atoms --------------------- 
+lattice 	fcc ${latconst}
+region	box block 0 1 0 1 0 1 units lattice
+create_box	2 box
+
+lattice	fcc ${latconst} orient x 1 0 0 orient y 0 1 0 orient z 0 0 1  
+create_atoms 1 box  ### TASK: change atom type here (from 1 to 2 for Al->Li)
+replicate 1 1 1     ### TASK: change supercell size
+
+# Al Li
+mass		1 26.981539 # Al
+mass		2 6.941  # Li
+
+# ---------- Define Interatomic Potential --------------------- 
+pair_style pace/extrapolation
+pair_coeff * * AlLi.yaml AlLi.asi Al Li
+
+
+fix pace_gamma all pair 50 pace/extrapolation gamma 1
+compute max_pace_gamma all reduce max f_pace_gamma
+variable dump_skip equal "c_max_pace_gamma < 5"
+
+dump pace_dump all custom 50 extrapolative_structures.dump id type x y z f_pace_gamma
+dump_modify pace_dump skip v_dump_skip
+
+
+variable max_pace_gamma equal c_max_pace_gamma
+fix extreme_extrapolation all halt 50 v_max_pace_gamma > 100
+
+# ---------- Define Settings --------------------- 
+neighbor 2.0 bin 
+neigh_modify delay 10 check yes 
+ 
+
+thermo_style custom step etotal ke pe temp vol press fmax c_max_pace_gamma 
+thermo 50
+# ---------- Run Minimization --------------------- 
+
+fix 1 all box/relax iso 0.0 vmax 0.001
+
+min_style cg 
+minimize 1e-25 1e-25 5000 10000 
+unfix 1
+
+# ---------- Run dynamics --------------------- 
+velocity	all create 600 16
+timestep	0.001
+
+fix 2 all nvt temp 300 300 $(100.0*dt)  ## TASK: comment this line and uncomment next line to have NPT simulation
+#fix 2 all npt temp 300 300 $(100.0*dt) aniso 0 0 $(100.0*dt)  ## TASK: change temperature range from 300 300 to 300 1000
+
+run 10000
+unfix 2
+
+
+print "All done!" 
