@@ -84,7 +84,7 @@ cd
 cd pace-tutorial
 mkdir AlLi_fit
 cd AlLi_fit
-cp ../AlLi_vasp_data/AlLi.pkl.gz
+cp ../AlLi_vasp_data/AlLi.pkl.gz .
 ```
 and run automatic input file generation
 ```bash
