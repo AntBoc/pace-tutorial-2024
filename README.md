@@ -33,7 +33,7 @@ git clone https://github.com/ICAMS/python-ace.git
 cd python-ace
 pip install . --user
 cd lib/maxvolpy
-python setup.py install --user
+pip install . --user
 ```
 
 ### tensorpotential
