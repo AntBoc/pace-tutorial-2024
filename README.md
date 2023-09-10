@@ -6,7 +6,7 @@ This repo contains files for tutorial on PACE and pacemaker
 From dashboard ([https://www.puhti.csc.fi/pun/sys/dashboard/](https://www.mahti.csc.fi/pun/sys/dashboard/)) 
 *  Start Jupyter 
     * Partition: interactive
-    * Resources: Cores - 8
+    * Resources: Cores - 16
     * Time: 4 hours
     * Settings: Python - tensorflow
 
@@ -19,6 +19,7 @@ From dashboard ([https://www.puhti.csc.fi/pun/sys/dashboard/](https://www.mahti.
 ## Installation of pacemaker (python-ace and tensorpotential)
 
 ```bash
+echo 'export PYTHONPATH=$HOME/.local/lib/python3.9/site-packages/:$PYTHONPATH' >> ~/.bashrc 
 source ~/.bashrc
 cd
 mkdir tools
