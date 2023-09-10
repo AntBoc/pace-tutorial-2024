@@ -6,7 +6,7 @@ This repo contains files for tutorial on PACE and pacemaker
 From dashboard ([https://www.puhti.csc.fi/pun/sys/dashboard/](https://www.mahti.csc.fi/pun/sys/dashboard/)) 
 *  Start Jupyter 
     * Partition: interactive
-    * Resources: Cores - 16
+    * Resources: Cores - 32
     * Time: 4 hours
     * Settings: Python - tensorflow
 
