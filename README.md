@@ -3,11 +3,14 @@ This repo contains files for tutorial on PACE and pacemaker
 
 # Preparation
 
-From dashboard (https://www.puhti.csc.fi/pun/sys/dashboard/) 
+From dashboard ([https://www.puhti.csc.fi/pun/sys/dashboard/](https://www.mahti.csc.fi/pun/sys/dashboard/)) 
 *  Start Jupyter 
-    * Partition: gpu or interactive
-    * Resources: Cores - 8, Memory - 32 GB, Local disk - 40
+    * Partition: interactive
+    * Resources: Cores - 8
+    * Time: 4 hours
     * Settings: Python - tensorflow
+
+* Connect to Jupyter
 
 ## Terminal in JupyterLab
 - New Laucnher (Ctrl+Shift+L) - Terminal
@@ -16,13 +19,14 @@ From dashboard (https://www.puhti.csc.fi/pun/sys/dashboard/)
 ## Installation of pacemaker (python-ace and tensorpotential)
 
 ```bash
+source ~/.bashrc
 cd
 mkdir tools
-export PATH=~/.local/bin/:$PATH
 ```
 
 ### python-ace
 ```bash
+cd
 cd tools
 git clone https://github.com/ICAMS/python-ace.git
 cd python-ace
@@ -33,6 +37,7 @@ python setup.py install --user
 
 ### tensorpotential
 ```bash
+cd
 cd tools 
 git clone https://github.com/ICAMS/TensorPotential.git
 cd TensorPotential
@@ -41,6 +46,7 @@ pip install . --user
 
 ## LAMMPS
 ```bash
+cd
 cd tools/
 git clone --depth 1  --branch develop https://github.com/lammps/lammps.git lammps
 cd lammps/
@@ -73,6 +79,7 @@ pace_collect --free-atom-energy auto --output-dataset-filename AlLi.pkl.gz
 
 Prepare the folder and copy the dataset
 ```bash
+cd
 cd pace-tutorial
 mkdir AlLi_fit
 cd AlLi_fit
@@ -123,6 +130,7 @@ pace_activeset -d fitting_data_info.pckl.gzip AlLi.yaml
 Go to `AlLi-LAMMPS` folder and execute LAMMPS there
 
 ```bash
+cd
 cd pace-tutorial/AlLi-LAMMPS
 lmp -in in.lammps
 ```
