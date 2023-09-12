@@ -9,6 +9,7 @@ From dashboard ([https://www.puhti.csc.fi/pun/sys/dashboard/](https://www.mahti.
     * Resources: Cores - 32 (best) / 16 (still OK)
     * Time: 4 hours
     * Settings: Python - tensorflow
+    * Jupyter type - lab
 
 * Connect to Jupyter
 
