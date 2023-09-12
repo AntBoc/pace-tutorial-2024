@@ -10,6 +10,7 @@ From dashboard ([https://www.puhti.csc.fi/pun/sys/dashboard/](https://www.mahti.
     * Time: 4 hours
     * Settings: Python - tensorflow
     * Jupyter type - lab
+    * Working directory:  /user/[YOUR_USER_NAME]
 
 * Connect to Jupyter
 
