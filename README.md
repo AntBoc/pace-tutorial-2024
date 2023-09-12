@@ -6,7 +6,7 @@ This repo contains files for tutorial on PACE and pacemaker
 From dashboard ([https://www.puhti.csc.fi/pun/sys/dashboard/](https://www.mahti.csc.fi/pun/sys/dashboard/)) 
 *  Start Jupyter 
     * Partition: interactive
-    * Resources: Cores - 32
+    * Resources: Cores - 32 (best) / 16 (still OK)
     * Time: 4 hours
     * Settings: Python - tensorflow
 
@@ -148,3 +148,11 @@ pace_select -p AlLi.yaml -a AlLi.asi -e "Al Li" -m 20 -o selected/POSCAR extrapo
 ## (optional) Active exploration
 
 Check the Jupyter notebook in `~/tools/python-ace/examples/Active_Exploration.ipynb` and adapt it for Al and/or Li and for your `AlLi.yaml/asi` potential
+
+# Further reading
+
+* [Online documentation](https://pacemaker.readthedocs.io/)
+* [Lysogorskiy Y., Bochkarev A., Mrovec M., Drautz R., Active learning strategies for atomic cluster expansion models, Phys. Rev. Materials 7, 043801 (2023)](https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.7.043801)
+* [Bochkarev, A., Lysogorskiy, Y., Menon, S., Qamar, M., Mrovec, M. and Drautz, R. Efficient parametrization of the atomic cluster expansion. Physical Review Materials 6(1) 013804 (2022)](https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.6.013804)
+* [Lysogorskiy, Y., Oord, C. v. d., Bochkarev, A., Menon, S., Rinaldi, M., Hammerschmidt, T., Mrovec, M., Thompson, A., Csányi, G., Ortner, C. and  Drautz, R. Performant implementation of the atomic cluster expansion (PACE) and application to copper and silicon. npj Computational Materials 7(1), 1-12 (2021)](https://www.nature.com/articles/s41524-021-00559-9)
+* [Drautz, R. Atomic cluster expansion for accurate and transferable interatomic potentials. Physical Review B, 99(1), 014104 (2019)](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.99.014104)
