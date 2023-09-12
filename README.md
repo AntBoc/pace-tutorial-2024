@@ -1,6 +1,8 @@
 # pace-tutorial
 This repo contains files for tutorial on PACE and pacemaker
 
+Tutorial slides [here](https://ruhr-uni-bochum.sciebo.de/s/xRfq9SsjaNKqMMq)
+
 # Preparation
 
 From dashboard ([https://www.puhti.csc.fi/pun/sys/dashboard/](https://www.mahti.csc.fi/pun/sys/dashboard/)) 
