@@ -35,7 +35,7 @@ make install
 
 ```bash
 git clone https://github.com/AntBoc/pace-tutorial-2024.git
-cd pace-tutorial
+cd pace-tutorial-2024
 tar zxvf AlLi_vasp_data.tar.gz
 ```
 
