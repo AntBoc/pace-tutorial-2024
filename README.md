@@ -52,7 +52,6 @@ pace_collect --free-atom-energy auto --output-dataset-filename AlLi.pkl.gz
 
 Prepare the folder and copy the dataset
 ```bash
-cd
 cd pace-tutorial-2024
 mkdir AlLi_fit
 cd AlLi_fit
