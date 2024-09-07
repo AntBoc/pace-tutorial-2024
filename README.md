@@ -5,7 +5,14 @@ Tutorial slides [here](https://ruhr-uni-bochum.sciebo.de/s/gdgMmnPlv9d2IyM)
 
 # Preparation
 
-A Linux-based system (or Windows with WSL) is recommended for compatibility with LAMMPS.
+- **Python 3.x**: Necessary for `pacemaker` and `python-ace`. Verify the installation by running:
+  ```bash
+  python3 --version
+  ```
+- **CMake**: Required to build LAMMPS. Install it by running:
+  ```bash
+  sudo apt-get install cmake
+  ```
 
 
 ## Installation of pacemaker (python-ace and tensorpotential)
