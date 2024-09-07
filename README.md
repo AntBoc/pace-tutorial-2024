@@ -5,7 +5,8 @@ Tutorial slides [here](https://ruhr-uni-bochum.sciebo.de/s/gdgMmnPlv9d2IyM)
 
 # Preparation
 
-ADD SOMETHING
+A Linux-based system (or Windows with WSL) is recommended for compatibility with LAMMPS.
+
 
 ## Installation of pacemaker (python-ace and tensorpotential)
 
