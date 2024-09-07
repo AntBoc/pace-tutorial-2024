@@ -1,9 +1,7 @@
 # pace-tutorial
 This repo contains files for tutorial on PACE and pacemaker
 
-!!!UPDATE!!!
-Tutorial slides [here](https://ruhr-uni-bochum.sciebo.de/s/xRfq9SsjaNKqMMq)
-!!!UPDATE!!!
+Tutorial slides [here](https://ruhr-uni-bochum.sciebo.de/s/gdgMmnPlv9d2IyM)
 
 # Preparation
 
