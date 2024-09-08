@@ -117,7 +117,7 @@ pace_select -p AlLi.yaml -a AlLi.asi -e "Al Li" -m 20 -o selected/POSCAR extrapo
 
 ## (optional) Active exploration
 
-Check the Jupyter notebook in `~/tools/python-ace/examples/active_learning/Active_Exploration.ipynb` and adapt it for Al and/or Li and for your `AlLi.yaml/asi` potential
+Check the Jupyter notebook in `python-ace/examples/active_learning/Active_Exploration.ipynb` and adapt it for Al and/or Li and for your `AlLi.yaml/asi` potential
 
 # Further reading
 
