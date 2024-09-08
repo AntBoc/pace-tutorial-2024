@@ -102,7 +102,6 @@ pace_activeset -d fitting_data_info.pckl.gzip AlLi.yaml
 Go to `AlLi-LAMMPS` folder and execute LAMMPS there
 
 ```bash
-cd
 cd pace-tutorial-2024/AlLi-LAMMPS
 lmp -in in.lammps
 ```
