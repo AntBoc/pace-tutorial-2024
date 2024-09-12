@@ -20,18 +20,20 @@ From dashboard (https://www.mahti.csc.fi/pun/sys/dashboard/)
 ## Installation of pace(grace)maker (python-ace and tensorpotential)
 
 ## PYTHON-ACE
-
+```bash
 git clone --depth 1 --branch feature/grace_fs https://github.com/ICAMS/python-ace.git
 cd python-ace
 pip install .
 cd ..
+```
 
 ## GRACE-TENSORPOTENTIAL
-
+```bash
 git clone --depth 1 https://github.com/ICAMS/grace-tensorpotential.git
 cd grace-tensorpotential
 pip install .
 cd ..
+```
 
 ### PACEMAKER DOCS
 
@@ -47,7 +49,7 @@ mkdir build
 cd build/
 cmake -DCMAKE_BUILD_TYPE=Release -D BUILD_MPI=ON -DPKG_ML-PACE=ON -DPKG_MC=ON -DPKG_MANYBODY=ON ../cmake
 
-Check that you have line TensorFlow library is FOUND at ... after previous command
+Check that you have line `TensorFlow library is FOUND at ...` after previous command
 
 cmake --build . -- -j 
 make install
