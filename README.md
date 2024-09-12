@@ -147,7 +147,7 @@ Check the Jupyter notebook in `python-ace/examples/active_learning/Active_Explor
 # Further reading
 
 * [Online documentation](https://pacemaker.readthedocs.io/)
-* [Bochkarev A., Lysogorskiy Y., and Drautz R. Graph Atomic Cluster Expansion for Semilocal Interactions beyond Equivariant Message Passing](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.14.021036)
+* [Bochkarev A., Lysogorskiy Y., and Drautz R. Graph Atomic Cluster Expansion for Semilocal Interactions beyond Equivariant Message Passing](https://doi.org/10.1103/PhysRevX.14.021036)
 * [Lysogorskiy Y., Bochkarev A., Mrovec M., Drautz R., Active learning strategies for atomic cluster expansion models, Phys. Rev. Materials 7, 043801 (2023)](https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.7.043801)
 * [Bochkarev, A., Lysogorskiy, Y., Menon, S., Qamar, M., Mrovec, M. and Drautz, R. Efficient parametrization of the atomic cluster expansion. Physical Review Materials 6(1) 013804 (2022)](https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.6.013804)
 * [Lysogorskiy, Y., Oord, C. v. d., Bochkarev, A., Menon, S., Rinaldi, M., Hammerschmidt, T., Mrovec, M., Thompson, A., Csányi, G., Ortner, C. and  Drautz, R. Performant implementation of the atomic cluster expansion (PACE) and application to copper and silicon. npj Computational Materials 7(1), 1-12 (2021)](https://www.nature.com/articles/s41524-021-00559-9)
