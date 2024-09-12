@@ -53,9 +53,13 @@ Check that you have line `TensorFlow library is FOUND at ...` after previous com
 
 cmake --build . -- -j 
 make install
-export LD_LIBRARY_PATH=/usr/local/lib64/python3.9/site-packages/tensorflow:$LD_LIBRARY_PATH
 
 cd ../..
+```
+Path to the TensorFlow lib should be automatically set, but in case of problems try setting it manually
+
+```bash
+export LD_LIBRARY_PATH=/usr/local/lib64/python3.9/site-packages/tensorflow:$LD_LIBRARY_PATH
 ```
 
 ## Tutorial materials
@@ -140,6 +144,11 @@ Remember, that LAMMPS will overwrite `extrapolative_structures.dump` file, so co
 
 ```bash
 pace_select -p AlLi.yaml -a AlLi.asi -e "Al Li" -m 20 -o selected/POSCAR extrapolative_structures.dump
+```
+In case of problems with maxvolpy library, go to python-ace/lib/maxvolpy and try to run
+
+```bash
+pip install .
 ```
 
 ## (optional) Active exploration
