@@ -5,30 +5,55 @@ Tutorial slides [here](https://ruhr-uni-bochum.sciebo.de/s/gdgMmnPlv9d2IyM)
 
 # Preparation
 
-- **Python 3.x**: Necessary for `pacemaker` and `python-ace`. Verify the installation by running:
-  ```bash
-  python3 --version
-  ```
-- **CMake**: Required to build LAMMPS. Install it by running:
-  ```bash
-  sudo apt-get install cmake
-  ```
+From dashboard (https://www.mahti.csc.fi/pun/sys/dashboard/)
+*  Start Jupyter 
+    * Partition: interactive
+    * Resources: Cores - 16
+    * Time: 4 hours
+    * Settings: Python - tensorflow
+    * Module version: tensorflow/2.15
+    * Jupyter type - lab
+    * Working directory:  /user/[YOUR_USER_NAME]
 
+* Connect to Jupyter
 
-## Installation of pacemaker (python-ace and tensorpotential)
+## Installation of pace(grace)maker (python-ace and tensorpotential)
 
-Visit the https://pacemaker.readthedocs.io/en/latest/pacemaker/install/ and follow installation instructions
+## PYTHON-ACE
+
+git clone --depth 1 --branch feature/grace_fs https://github.com/ICAMS/python-ace.git
+cd python-ace
+pip install .
+cd ..
+
+## GRACE-TENSORPOTENTIAL
+
+git clone --depth 1 https://github.com/ICAMS/grace-tensorpotential.git
+cd grace-tensorpotential
+pip install .
+cd ..
+
+### PACEMAKER DOCS
+
+Documentation on pacemaker and installation instruction without GRACE
+https://pacemaker.readthedocs.io/en/latest/pacemaker/install/ 
 
 ## LAMMPS
 
 ```bash
-git clone --depth 1  --branch develop https://github.com/lammps/lammps.git lammps
+git clone --depth 1 --branch grace https://github.com/yury-lysogorskiy/lammps.git
 cd lammps/
 mkdir build
 cd build/
-cmake -DCMAKE_BUILD_TYPE=Release -D BUILD_MPI=ON -DPKG_ML-PACE=ON  ../cmake
+cmake -DCMAKE_BUILD_TYPE=Release -D BUILD_MPI=ON -DPKG_ML-PACE=ON -DPKG_MC=ON -DPKG_MANYBODY=ON ../cmake
+
+Check that you have line TensorFlow library is FOUND at ... after previous command
+
 cmake --build . -- -j 
 make install
+export LD_LIBRARY_PATH=/usr/local/lib64/python3.9/site-packages/tensorflow:$LD_LIBRARY_PATH
+
+cd ../..
 ```
 
 ## Tutorial materials
@@ -46,13 +71,13 @@ tar zxvf AlLi_vasp_data.tar.gz
 ```bash
 cd  AlLi_vasp_data
 pace_collect --free-atom-energy auto --output-dataset-filename AlLi.pkl.gz
+cd ..
 ```
 
 ## pacemaker: automatic input file generation
 
 Prepare the folder and copy the dataset
 ```bash
-cd pace-tutorial-2024
 mkdir AlLi_fit
 cd AlLi_fit
 cp ../AlLi_vasp_data/AlLi.pkl.gz .
