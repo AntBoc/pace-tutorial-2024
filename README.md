@@ -47,7 +47,7 @@ git clone --depth 1 --branch grace https://github.com/yury-lysogorskiy/lammps.gi
 cd lammps/
 mkdir build
 cd build/
-cmake -DCMAKE_BUILD_TYPE=Release -D BUILD_MPI=ON -DPKG_ML-PACE=ON -DPKG_MC=ON -DPKG_MANYBODY=ON ../cmake
+cmake -DCMAKE_BUILD_TYPE=Release -D BUILD_MPI=ON -DPKG_ML-01-PACE=ON -DPKG_MC=ON -DPKG_MANYBODY=ON ../cmake
 
 # Check that you have line `TensorFlow library is FOUND at ...` after previous command
 
@@ -67,26 +67,26 @@ export LD_LIBRARY_PATH=/usr/local/lib64/python3.9/site-packages/tensorflow:$LD_L
 ```bash
 git clone https://github.com/AntBoc/pace-tutorial-2024.git
 cd pace-tutorial-2024
-tar zxvf AlLi_vasp_data.tar.gz
 ```
 
-# TUTORIAL
+# TUTORIAL: pacemaker
 
 ## DFT data collection
 
 ```bash
+cd 01-PACE/00-AlLi-VASP-DATA
+tar zxvf AlLi_vasp_data.tar.gz
 cd  AlLi_vasp_data
 pace_collect --free-atom-energy auto --output-dataset-filename AlLi.pkl.gz
-cd ..
+cd ../..
 ```
 
 ## pacemaker: automatic input file generation
 
 Prepare the folder and copy the dataset
 ```bash
-mkdir AlLi_fit
-cd AlLi_fit
-cp ../AlLi_vasp_data/AlLi.pkl.gz .
+cd 01-AlLi-FIT
+cp ../00-AlLi-VASP-DATA/AlLi.pkl.gz .
 ```
 and run automatic input file generation
 ```bash
@@ -133,7 +133,7 @@ pace_activeset -d fitting_data_info.pckl.gzip AlLi.yaml
 Go to `AlLi-LAMMPS` folder and execute LAMMPS there
 
 ```bash
-cd pace-tutorial-2024/AlLi-LAMMPS
+cd pace-tutorial-2024/02-AlLi-LAMMPS
 lmp -in in.lammps
 ```
 You should see `extrapolative_structures.dump` file. If it is empty, then no extrapolation occurs. Also check `c_max_pace_gamma` column in `log.lammps` output.
@@ -155,6 +155,64 @@ pip install .
 
 Check the Jupyter notebook in `python-ace/examples/active_learning/Active_Exploration.ipynb` and adapt it for Al and/or Li and for your `AlLi.yaml/asi` potential
 
+# TUTORIAL: gracemaker
+
+## gracemaker: run fit
+```bash
+cd 02-GRACE/01-HEA25-FS-FIT
+gracemaker input.yaml -sf 
+```
+OR
+
+after termination of gracemaker, run the following command to export model to LAMMPS format
+
+```bash
+gracemaker -r -s -sf
+```
+
+## construction of active set
+
+```bash
+cd seed/1/
+pace_activeset -d training_set.pkl.gz FS_model.yaml
+```
+
+## Run LAMMPS with GRACE-FS
+```bash
+cd 02-GRACE/02-HEA25-LAMMPS/10-elems-HEA25
+orterun -n 2 --oversubscribe lmp -in in.lammps.ext
+```
+
+## (OPTIONAL) Universal GRACE
+```bash
+cd 02-GRACE/02-HEA25-LAMMPS/10-elems-mp-1layer
+```
+
+Download universal GRACE models
+```bash
+grace_download
+```
+Identify the path to the 1-LAYER model
+
+```bash
+grace_download | grep mp-1layer
+```
+copy this path and inset into the `in.lammps` :
+```
+...
+pair_style grace
+pair_coeff      * * /PATH/TO/HOME/.cache/grace/train_1.5M_test_75_grace_1layer_v2_7Aug2024 Ag Au Cu Ir Ni Pd Pt Rh Ru Sc
+...
+```
+
+Run lammps WITHOUT mpi (on GPU, ideally):
+```bash
+lmp -in in.lammps
+```
+
+
+
+
 # Further reading
 
 * [Online documentation](https://pacemaker.readthedocs.io/)
@@ -163,3 +221,6 @@ Check the Jupyter notebook in `python-ace/examples/active_learning/Active_Explor
 * [Bochkarev, A., Lysogorskiy, Y., Menon, S., Qamar, M., Mrovec, M. and Drautz, R. Efficient parametrization of the atomic cluster expansion. Physical Review Materials 6(1) 013804 (2022)](https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.6.013804)
 * [Lysogorskiy, Y., Oord, C. v. d., Bochkarev, A., Menon, S., Rinaldi, M., Hammerschmidt, T., Mrovec, M., Thompson, A., Csányi, G., Ortner, C. and  Drautz, R. Performant implementation of the atomic cluster expansion (PACE) and application to copper and silicon. npj Computational Materials 7(1), 1-12 (2021)](https://www.nature.com/articles/s41524-021-00559-9)
 * [Drautz, R. Atomic cluster expansion for accurate and transferable interatomic potentials. Physical Review B, 99(1), 014104 (2019)](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.99.014104)
+* HEA25 dataset: N. Lopanitsyna et al 2023 PRM 7(4) 045802  [link](https://link.aps.org/doi/10.1103/PhysRevMaterials.7.045802)
+* HEA25S dataset: A. Mazitov et al 2024 J. Phys. Mater. 7 025007 [link](https://iopscience.iop.org/article/10.1088/2515-7639/ad2983)
+

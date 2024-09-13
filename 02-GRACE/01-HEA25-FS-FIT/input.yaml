@@ -1,0 +1,40 @@
+seed: 1
+cutoff: 6
+
+data:
+  filename: "./HEA25S_10.pckl.gzip"
+#  train_size: 100
+#  test_filename: "/path/to/test.pckl.gzip"
+  reference_energy: 0.0
+  test_size: 0.05 #
+
+potential:
+  #  elements: ["C", "H", "O"]
+  preset: "FS" # FS, GRACE_1LAYER, GRACE_2LAYER
+
+fit:
+  #  strategy: mirrored # or -m flag
+  loss: {
+    energy: { type: huber, weight: 1, delta: 0.1 }, # or type: square
+    forces: { type: huber, weight: 5., delta: 0.1 }, # or type: square and no delta
+
+    switch: { after_iter: 3, energy: { weight: 5.0 }, forces: { weight: 2.0 } }
+
+  }
+
+  maxiter: 5
+
+  optimizer: Adam
+  opt_params: { learning_rate: 0.01, amsgrad: True, use_ema: True, ema_momentum: 0.99,  weight_decay: null, clipvalue: 1.0 }
+
+  #  optimizer: L-BFGS-B
+
+  batch_size: 20
+
+  train_max_n_buckets: 3
+  test_max_n_buckets: 2
+
+  checkpoint_freq: 1
+  progressbar: True
+  #train_shuffle: True
+  #jit_compile: True
