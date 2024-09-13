@@ -49,7 +49,7 @@ mkdir build
 cd build/
 cmake -DCMAKE_BUILD_TYPE=Release -D BUILD_MPI=ON -DPKG_ML-PACE=ON -DPKG_MC=ON -DPKG_MANYBODY=ON ../cmake
 
-Check that you have line `TensorFlow library is FOUND at ...` after previous command
+# Check that you have line `TensorFlow library is FOUND at ...` after previous command
 
 cmake --build . -- -j 
 make install
