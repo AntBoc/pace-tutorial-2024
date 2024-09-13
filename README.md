@@ -169,6 +169,10 @@ after termination of gracemaker, run the following command to export model to LA
 ```bash
 gracemaker -r -s -sf
 ```
+If a problem with `yaml` appers, run
+```bash
+pip install --upgrade pyyaml
+```
 
 ## construction of active set
 
