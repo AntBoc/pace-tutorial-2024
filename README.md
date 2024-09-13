@@ -155,6 +155,10 @@ pip install .
 
 Check the Jupyter notebook in `python-ace/examples/active_learning/Active_Exploration.ipynb` and adapt it for Al and/or Li and for your `AlLi.yaml/asi` potential
 
+## (optional) Using ACE models in python with ASE
+
+Check out the `01-PACE/pace_basic_validation.ipynb` for basic manipulations with a trained model in python
+
 # TUTORIAL: gracemaker
 
 ## gracemaker: run fit
@@ -196,7 +200,7 @@ cd 02-GRACE/02-HEA25-LAMMPS/10-elems-HEA25
 orterun -n 2 --oversubscribe lmp -in in.lammps.ext
 ```
 
-## (OPTIONAL) Universal GRACE
+## (Optional) Universal GRACE
 ```bash
 cd 02-GRACE/02-HEA25-LAMMPS/10-elems-mp-1layer
 ```
@@ -223,6 +227,10 @@ Run lammps WITHOUT mpi (on GPU, ideally):
 lmp -in in.lammps
 ```
 
+## (Optional) Visualize elements distribution
+
+Check out notebook `02-GRACE/02-HEA25-LAMMPS/Visualize_elemt_distrb.ipynb` for visualization of the
+elements distribution before and after the MDMC run. 
 
 
 

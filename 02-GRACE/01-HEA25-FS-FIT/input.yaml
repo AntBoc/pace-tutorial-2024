@@ -17,6 +17,7 @@ fit:
   loss: {
     energy: { type: huber, weight: 1, delta: 0.1 }, # or type: square
     forces: { type: huber, weight: 5., delta: 0.1 }, # or type: square and no delta
+    # stress: {type: square, weight: 0.01},
 
     switch: { after_iter: 3, energy: { weight: 5.0 }, forces: { weight: 2.0 } }
 
