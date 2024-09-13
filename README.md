@@ -180,6 +180,15 @@ pip install --upgrade pyyaml
 cd seed/1/
 pace_activeset -d training_set.pkl.gz FS_model.yaml
 ```
+Now you can rename potential and active set files for using it in further examples:
+```bash
+mv FS_model.yaml HEA25_FS_model.yaml
+mv FS_model.asi HEA25_FS_model.asi
+```
+
+OR
+
+We will use previously trained models available
 
 ## Run LAMMPS with GRACE-FS
 ```bash
