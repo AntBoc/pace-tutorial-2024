@@ -1,0 +1,182 @@
+
+#-------------- INIT ---------------------
+units		metal
+dimension	3
+boundary 	p p p
+atom_style	atomic
+variable 	dt equal 0.001
+
+#---------------- ATOM DEFINITION -------------------
+read_data	structure.lammps-data
+
+mass 1 107.8682 # Ag
+mass 2 196.966569 # Au
+mass 3 63.546 # Cu
+mass 4 192.217 # Ir
+mass 5 58.6934 # Ni
+mass 6 106.42 # Pd
+mass 7 195.084 # Pt
+mass 8 102.9055 # Rh
+mass 9 101.07 # Ru
+mass 10 44.955908 # Sc
+
+pair_style grace/fs extrapolation
+pair_coeff      * * ../HEA25S_FS_model.yaml ../HEA25S_FS_model.asi Ag Au Cu Ir Ni Pd Pt Rh Ru Sc
+
+neighbor	2.0 bin
+neigh_modify	delay 0 every 1 check yes
+
+# -------------------- min_dist --------------------
+compute dist all pair/local dist
+compute  min_dist all reduce  min c_dist inputs local
+
+fix grace_gamma all pair 50 grace/fs gamma 1
+compute max_grace_gamma all reduce max f_grace_gamma
+
+print "-------------- MINIMIZE  min_full ---------------------"
+
+reset_timestep	0
+thermo_style custom step cpuremain temp pe  fmax c_min_dist c_max_grace_gamma  press vol
+thermo	50
+thermo_modify flush yes
+dump	dump_relax all custom 50 dump.min_full.dump id type  xu yu zu f_grace_gamma
+
+fix box_relax all box/relax aniso 0.0 vmax 0.05
+
+min_style cg
+minimize 0 1.0e-3 500 750
+
+undump dump_relax
+
+unfix box_relax
+
+write_data min_full.lammps-data
+
+fix fix_print all print 1 "$(pe)" file min_full.energy.dat
+run 0
+unfix fix_print
+
+
+print "-------------- MDMC mdmc ---------------------"
+
+reset_timestep	0
+timestep $(dt)
+
+# init T=2*T_target
+velocity all create 1000.0 321 mom yes rot yes dist gaussian
+
+fix AgAu  all atom/swap 50 10 1021 500 ke yes types 1 2
+fix AgCu  all atom/swap 50 10 1022 500 ke yes types 1 3
+fix AgIr  all atom/swap 50 10 1023 500 ke yes types 1 4
+fix AgNi  all atom/swap 50 10 1024 500 ke yes types 1 5
+fix AgPd  all atom/swap 50 10 1025 500 ke yes types 1 6
+fix AgPt  all atom/swap 50 10 1026 500 ke yes types 1 7
+fix AgRh  all atom/swap 50 10 1027 500 ke yes types 1 8
+fix AgRu  all atom/swap 50 10 1028 500 ke yes types 1 9
+fix AgSc  all atom/swap 50 10 1029 500 ke yes types 1 10
+fix AuCu  all atom/swap 50 10 1122 500 ke yes types 2 3
+fix AuIr  all atom/swap 50 10 1123 500 ke yes types 2 4
+fix AuNi  all atom/swap 50 10 1124 500 ke yes types 2 5
+fix AuPd  all atom/swap 50 10 1125 500 ke yes types 2 6
+fix AuPt  all atom/swap 50 10 1126 500 ke yes types 2 7
+fix AuRh  all atom/swap 50 10 1127 500 ke yes types 2 8
+fix AuRu  all atom/swap 50 10 1128 500 ke yes types 2 9
+fix AuSc  all atom/swap 50 10 1129 500 ke yes types 2 10
+fix CuIr  all atom/swap 50 10 1223 500 ke yes types 3 4
+fix CuNi  all atom/swap 50 10 1224 500 ke yes types 3 5
+fix CuPd  all atom/swap 50 10 1225 500 ke yes types 3 6
+fix CuPt  all atom/swap 50 10 1226 500 ke yes types 3 7
+fix CuRh  all atom/swap 50 10 1227 500 ke yes types 3 8
+fix CuRu  all atom/swap 50 10 1228 500 ke yes types 3 9
+fix CuSc  all atom/swap 50 10 1229 500 ke yes types 3 10
+fix IrNi  all atom/swap 50 10 1324 500 ke yes types 4 5
+fix IrPd  all atom/swap 50 10 1325 500 ke yes types 4 6
+fix IrPt  all atom/swap 50 10 1326 500 ke yes types 4 7
+fix IrRh  all atom/swap 50 10 1327 500 ke yes types 4 8
+fix IrRu  all atom/swap 50 10 1328 500 ke yes types 4 9
+fix IrSc  all atom/swap 50 10 1329 500 ke yes types 4 10
+fix NiPd  all atom/swap 50 10 1425 500 ke yes types 5 6
+fix NiPt  all atom/swap 50 10 1426 500 ke yes types 5 7
+fix NiRh  all atom/swap 50 10 1427 500 ke yes types 5 8
+fix NiRu  all atom/swap 50 10 1428 500 ke yes types 5 9
+fix NiSc  all atom/swap 50 10 1429 500 ke yes types 5 10
+fix PdPt  all atom/swap 50 10 1526 500 ke yes types 6 7
+fix PdRh  all atom/swap 50 10 1527 500 ke yes types 6 8
+fix PdRu  all atom/swap 50 10 1528 500 ke yes types 6 9
+fix PdSc  all atom/swap 50 10 1529 500 ke yes types 6 10
+fix PtRh  all atom/swap 50 10 1627 500 ke yes types 7 8
+fix PtRu  all atom/swap 50 10 1628 500 ke yes types 7 9
+fix PtSc  all atom/swap 50 10 1629 500 ke yes types 7 10
+fix RhRu  all atom/swap 50 10 1728 500 ke yes types 8 9
+fix RhSc  all atom/swap 50 10 1729 500 ke yes types 8 10
+fix RuSc  all atom/swap 50 10 1829 500 ke yes types 9 10
+
+# thermostat + barostat
+fix mdmc_npt all npt temp 500 500 0.1 aniso 0 0 0.1
+
+thermo_style custom step cpuremain temp pe fmax c_min_dist c_max_grace_gamma f_AgAu[2] f_AgCu[2] f_AgIr[2] f_AgNi[2] f_AgPd[2] f_AgPt[2] f_AgRh[2] f_AgRu[2] f_AgSc[2] f_AuCu[2] f_AuIr[2] f_AuNi[2] f_AuPd[2] f_AuPt[2] f_AuRh[2] f_AuRu[2] f_AuSc[2] f_CuIr[2] f_CuNi[2] f_CuPd[2] f_CuPt[2] f_CuRh[2] f_CuRu[2] f_CuSc[2] f_IrNi[2] f_IrPd[2] f_IrPt[2] f_IrRh[2] f_IrRu[2] f_IrSc[2] f_NiPd[2] f_NiPt[2] f_NiRh[2] f_NiRu[2] f_NiSc[2] f_PdPt[2] f_PdRh[2] f_PdRu[2] f_PdSc[2] f_PtRh[2] f_PtRu[2] f_PtSc[2] f_RhRu[2] f_RhSc[2] f_RuSc[2]  press vol pxx pyy pzz pxy pxz pyz
+thermo	50
+thermo_modify flush yes
+dump	mdmc_dump all custom 50 dump.mdmc.dump  id type element xu yu zu f_grace_gamma
+dump_modify mdmc_dump element Ag Au Cu Ir Ni Pd Pt Rh Ru Sc
+
+
+run 500
+
+unfix AgAu
+unfix AgCu
+unfix AgIr
+unfix AgNi
+unfix AgPd
+unfix AgPt
+unfix AgRh
+unfix AgRu
+unfix AgSc
+unfix AuCu
+unfix AuIr
+unfix AuNi
+unfix AuPd
+unfix AuPt
+unfix AuRh
+unfix AuRu
+unfix AuSc
+unfix CuIr
+unfix CuNi
+unfix CuPd
+unfix CuPt
+unfix CuRh
+unfix CuRu
+unfix CuSc
+unfix IrNi
+unfix IrPd
+unfix IrPt
+unfix IrRh
+unfix IrRu
+unfix IrSc
+unfix NiPd
+unfix NiPt
+unfix NiRh
+unfix NiRu
+unfix NiSc
+unfix PdPt
+unfix PdRh
+unfix PdRu
+unfix PdSc
+unfix PtRh
+unfix PtRu
+unfix PtSc
+unfix RhRu
+unfix RhSc
+unfix RuSc
+
+unfix mdmc_npt
+undump mdmc_dump
+
+
+thermo_style custom step cpuremain temp pe fmax c_min_dist  press vol pxx pyy pzz pxy pxz pyz
+write_data mdmc.lammps-data
+
+fix fix_print all print 1 "$(pe)" file mdmc.energy.dat
+run 0
+unfix fix_print
+

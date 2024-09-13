@@ -1,0 +1,387 @@
+LAMMPS (21 Nov 2023)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+
+#-------------- INIT ---------------------
+units		metal
+dimension	3
+boundary 	p p p
+atom_style	atomic
+variable 	dt equal 0.001
+
+#---------------- ATOM DEFINITION -------------------
+read_data	structure.lammps-data
+Reading data file ...
+  orthogonal box = (0 0 -10) to (8.18 8.18 142.7)
+  1 by 1 by 8 MPI processor grid
+  reading atoms ...
+  480 atoms
+  read_data CPU = 0.007 seconds
+
+mass 1 107.8682 # Ag
+mass 2 196.966569 # Au
+mass 3 63.546 # Cu
+mass 4 192.217 # Ir
+mass 5 58.6934 # Ni
+mass 6 106.42 # Pd
+mass 7 195.084 # Pt
+mass 8 102.9055 # Rh
+mass 9 101.07 # Ru
+mass 10 44.955908 # Sc
+
+pair_style grace/fs extrapolation
+[GRACE/FS]
+[GRACE-FS] Version: 2024.7.4
+[GRACE-FS] Product evaluator is used
+pair_coeff      * * ../HEA25S_FS_model.yaml ../HEA25S_FS_model.asi Ag Au Cu Ir Ni Pd Pt Rh Ru Sc
+[GRACE-FS] Loading ../HEA25S_FS_model.yaml
+[GRACE-FS] Supporting 25 elements: Ag Au Co Cr Cu Fe Hf Ir Lu Mn Mo Nb Ni Pd Pt Rh Ru Sc Ta Ti V W Y Zn Zr 
+[GRACE-FS] Number of functions per element: 190 
+[GRACE-FS] Mapping LAMMPS atom type #1(Ag) -> ACE species type #0
+[GRACE-FS] Mapping LAMMPS atom type #2(Au) -> ACE species type #1
+[GRACE-FS] Mapping LAMMPS atom type #3(Cu) -> ACE species type #4
+[GRACE-FS] Mapping LAMMPS atom type #4(Ir) -> ACE species type #7
+[GRACE-FS] Mapping LAMMPS atom type #5(Ni) -> ACE species type #12
+[GRACE-FS] Mapping LAMMPS atom type #6(Pd) -> ACE species type #13
+[GRACE-FS] Mapping LAMMPS atom type #7(Pt) -> ACE species type #14
+[GRACE-FS] Mapping LAMMPS atom type #8(Rh) -> ACE species type #15
+[GRACE-FS] Mapping LAMMPS atom type #9(Ru) -> ACE species type #16
+[GRACE-FS] Mapping LAMMPS atom type #10(Sc) -> ACE species type #17
+[GRACE-FS] Loading ASI ../HEA25S_FS_model.asi
+
+neighbor	2.0 bin
+neigh_modify	delay 0 every 1 check yes
+
+# -------------------- min_dist --------------------
+compute dist all pair/local dist
+compute  min_dist all reduce  min c_dist inputs local
+
+fix grace_gamma all pair 50 grace/fs gamma 1
+compute max_grace_gamma all reduce max f_grace_gamma
+
+print "-------------- MINIMIZE  min_full ---------------------"
+-------------- MINIMIZE  min_full ---------------------
+
+reset_timestep	0
+thermo_style custom step cpuremain temp pe  fmax c_min_dist c_max_grace_gamma  press vol
+thermo	50
+thermo_modify flush yes
+dump	dump_relax all custom 50 dump.min_full.dump id type  xu yu zu f_grace_gamma
+
+fix box_relax all box/relax aniso 0.0 vmax 0.05
+
+min_style cg
+minimize 0 1.0e-3 500 750
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8
+  ghost atom cutoff = 8
+  binsize = 4, bins = 3 3 39
+  2 neighbor lists, perpetual/occasional/extra = 1 1 0
+  (1) pair grace/fs, perpetual
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+  (2) compute pair/local, occasional, half/full from (1)
+      attributes: half, newton on
+      pair build: halffull/newton
+      stencil: none
+      bin: none
+WARNING: Energy due to 3 extra global DOFs will be included in minimizer energies
+ (src/min.cpp:228)
+Per MPI rank memory allocation (min/avg/max) = 4.821 | 4.945 | 4.965 Mbytes
+   Step        CPULeft          Temp          PotEng          Fmax        c_min_dist   c_max_grace_gamma     Press          Volume    
+         0   0              0             -2909.5719      2.8103207      2.8920667      0.96283403    -178183.59      10217.523    
+        50   19.457493      0             -3031.3823      1.3419742      2.5946763      0.90227521     1632.2938      8651.6269    
+       100   17.782352      0             -3045.7886      1.12085        2.5511302      0.92072772    -3157.7025      8635.5471    
+       150   15.649531      0             -3051.0667      0.77337831     2.5385747      0.88190342     960.01014      8597.289     
+       200   13.211507      0             -3070.301       3.5438208      2.4645976      0.89321248    -2760.4467      8531.252     
+       250   10.914133      0             -3079.1419      0.50803339     2.4851849      0.82764665     1784.8998      8470.0251    
+       300   8.6151401      0             -3081.7551      0.51449056     2.4809757      0.80135355    -618.33657      8466.9186    
+       350   6.4416153      0             -3085.4275      0.39353909     2.489078       0.86458407    -1030.6354      8443.7131    
+       379   5.2150496      0             -3086.1518      0.4156571      2.4857964      0.86458407     442.8632       8432.0354    
+Loop time of 16.335 on 8 procs for 379 steps with 480 atoms
+
+99.9% CPU use with 8 MPI tasks x 1 OpenMP threads
+
+Minimization stats:
+  Stopping criterion = max force evaluations
+  Energy initial, next-to-last, final = 
+     -2909.57188712873   -3086.1504339234  -3086.15184384903
+  Force two-norm initial, final = 1968.3043 5.0793961
+  Force max component initial, final = 1152.2489 2.9889634
+  Final line search alpha, max atom move = 0.059267715 0.17714903
+  Iterations, force evaluations = 379 750
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0020467  | 10.894     | 15.628     | 148.7 | 66.69
+Neigh   | 0.0028104  | 0.13589    | 0.19346    |  17.0 |  0.83
+Comm    | 0.26672    | 4.0463     | 10.51      | 169.3 | 24.77
+Output  | 0.0024243  | 0.0026264  | 0.0027526  |   0.2 |  0.02
+Modify  | 0.00119    | 0.001317   | 0.0014369  |   0.2 |  0.01
+Other   |            | 1.255      |            |       |  7.68
+
+Nlocal:             60 ave          80 max           0 min
+Histogram: 1 0 0 0 0 1 0 0 1 5
+Nghost:        1165.25 ave        1449 max         423 min
+Histogram: 1 0 1 0 0 1 0 0 0 5
+Neighs:           4279 ave        6208 max           0 min
+Histogram: 1 0 0 0 1 1 0 0 3 2
+FullNghs:         8558 ave       12320 max           0 min
+Histogram: 1 0 0 1 0 0 1 0 3 2
+
+Total # of neighbors = 68464
+Ave neighs/atom = 142.63333
+Neighbor list builds = 654
+Dangerous builds = 609
+
+undump dump_relax
+
+unfix box_relax
+
+write_data min_full.lammps-data
+System init for write_data ...
+
+fix fix_print all print 1 "$(pe)" file min_full.energy.dat
+run 0
+WARNING: No fixes with time integration, atoms won't move (src/verlet.cpp:60)
+-3086.1518438490306835
+Per MPI rank memory allocation (min/avg/max) = 3.725 | 3.922 | 3.956 Mbytes
+   Step        CPULeft          Temp          PotEng          Fmax        c_min_dist   c_max_grace_gamma     Press          Volume    
+       379   0              0             -3086.1518      0.4156571      2.4857964      0.86458407     442.8632       8432.0354    
+Loop time of 2.232e-06 on 8 procs for 0 steps with 480 atoms
+
+128.8% CPU use with 8 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 2.232e-06  |            |       |100.00
+
+Nlocal:             60 ave          80 max           0 min
+Histogram: 1 0 0 0 0 1 0 0 1 5
+Nghost:        1165.25 ave        1449 max         423 min
+Histogram: 1 0 1 0 0 1 0 0 0 5
+Neighs:           4279 ave        6208 max           0 min
+Histogram: 1 0 0 0 1 1 0 0 3 2
+FullNghs:         8558 ave       12320 max           0 min
+Histogram: 1 0 0 1 0 0 1 0 3 2
+
+Total # of neighbors = 68464
+Ave neighs/atom = 142.63333
+Neighbor list builds = 0
+Dangerous builds = 0
+unfix fix_print
+
+
+print "-------------- MDMC mdmc ---------------------"
+-------------- MDMC mdmc ---------------------
+
+reset_timestep	0
+timestep $(dt)
+timestep 0.0010000000000000000208
+
+# init T=2*T_target
+velocity all create 1000.0 321 mom yes rot yes dist gaussian
+
+fix AgAu  all atom/swap 50 10 1021 500 ke yes types 1 2
+fix AgCu  all atom/swap 50 10 1022 500 ke yes types 1 3
+fix AgIr  all atom/swap 50 10 1023 500 ke yes types 1 4
+fix AgNi  all atom/swap 50 10 1024 500 ke yes types 1 5
+fix AgPd  all atom/swap 50 10 1025 500 ke yes types 1 6
+fix AgPt  all atom/swap 50 10 1026 500 ke yes types 1 7
+fix AgRh  all atom/swap 50 10 1027 500 ke yes types 1 8
+fix AgRu  all atom/swap 50 10 1028 500 ke yes types 1 9
+fix AgSc  all atom/swap 50 10 1029 500 ke yes types 1 10
+fix AuCu  all atom/swap 50 10 1122 500 ke yes types 2 3
+fix AuIr  all atom/swap 50 10 1123 500 ke yes types 2 4
+fix AuNi  all atom/swap 50 10 1124 500 ke yes types 2 5
+fix AuPd  all atom/swap 50 10 1125 500 ke yes types 2 6
+fix AuPt  all atom/swap 50 10 1126 500 ke yes types 2 7
+fix AuRh  all atom/swap 50 10 1127 500 ke yes types 2 8
+fix AuRu  all atom/swap 50 10 1128 500 ke yes types 2 9
+fix AuSc  all atom/swap 50 10 1129 500 ke yes types 2 10
+fix CuIr  all atom/swap 50 10 1223 500 ke yes types 3 4
+fix CuNi  all atom/swap 50 10 1224 500 ke yes types 3 5
+fix CuPd  all atom/swap 50 10 1225 500 ke yes types 3 6
+fix CuPt  all atom/swap 50 10 1226 500 ke yes types 3 7
+fix CuRh  all atom/swap 50 10 1227 500 ke yes types 3 8
+fix CuRu  all atom/swap 50 10 1228 500 ke yes types 3 9
+fix CuSc  all atom/swap 50 10 1229 500 ke yes types 3 10
+fix IrNi  all atom/swap 50 10 1324 500 ke yes types 4 5
+fix IrPd  all atom/swap 50 10 1325 500 ke yes types 4 6
+fix IrPt  all atom/swap 50 10 1326 500 ke yes types 4 7
+fix IrRh  all atom/swap 50 10 1327 500 ke yes types 4 8
+fix IrRu  all atom/swap 50 10 1328 500 ke yes types 4 9
+fix IrSc  all atom/swap 50 10 1329 500 ke yes types 4 10
+fix NiPd  all atom/swap 50 10 1425 500 ke yes types 5 6
+fix NiPt  all atom/swap 50 10 1426 500 ke yes types 5 7
+fix NiRh  all atom/swap 50 10 1427 500 ke yes types 5 8
+fix NiRu  all atom/swap 50 10 1428 500 ke yes types 5 9
+fix NiSc  all atom/swap 50 10 1429 500 ke yes types 5 10
+fix PdPt  all atom/swap 50 10 1526 500 ke yes types 6 7
+fix PdRh  all atom/swap 50 10 1527 500 ke yes types 6 8
+fix PdRu  all atom/swap 50 10 1528 500 ke yes types 6 9
+fix PdSc  all atom/swap 50 10 1529 500 ke yes types 6 10
+fix PtRh  all atom/swap 50 10 1627 500 ke yes types 7 8
+fix PtRu  all atom/swap 50 10 1628 500 ke yes types 7 9
+fix PtSc  all atom/swap 50 10 1629 500 ke yes types 7 10
+fix RhRu  all atom/swap 50 10 1728 500 ke yes types 8 9
+fix RhSc  all atom/swap 50 10 1729 500 ke yes types 8 10
+fix RuSc  all atom/swap 50 10 1829 500 ke yes types 9 10
+
+# thermostat + barostat
+fix mdmc_npt all npt temp 500 500 0.1 aniso 0 0 0.1
+
+thermo_style custom step cpuremain temp pe fmax c_min_dist c_max_grace_gamma f_AgAu[2] f_AgCu[2] f_AgIr[2] f_AgNi[2] f_AgPd[2] f_AgPt[2] f_AgRh[2] f_AgRu[2] f_AgSc[2] f_AuCu[2] f_AuIr[2] f_AuNi[2] f_AuPd[2] f_AuPt[2] f_AuRh[2] f_AuRu[2] f_AuSc[2] f_CuIr[2] f_CuNi[2] f_CuPd[2] f_CuPt[2] f_CuRh[2] f_CuRu[2] f_CuSc[2] f_IrNi[2] f_IrPd[2] f_IrPt[2] f_IrRh[2] f_IrRu[2] f_IrSc[2] f_NiPd[2] f_NiPt[2] f_NiRh[2] f_NiRu[2] f_NiSc[2] f_PdPt[2] f_PdRh[2] f_PdRu[2] f_PdSc[2] f_PtRh[2] f_PtRu[2] f_PtSc[2] f_RhRu[2] f_RhSc[2] f_RuSc[2]  press vol pxx pyy pzz pxy pxz pyz
+WARNING: New thermo_style command, previous thermo_modify settings will be lost (src/output.cpp:904)
+thermo	50
+thermo_modify flush yes
+dump	mdmc_dump all custom 50 dump.mdmc.dump  id type element xu yu zu f_grace_gamma
+dump_modify mdmc_dump element Ag Au Cu Ir Ni Pd Pt Rh Ru Sc
+
+
+run 500
+Per MPI rank memory allocation (min/avg/max) = 3.725 | 3.922 | 3.956 Mbytes
+   Step        CPULeft          Temp          PotEng          Fmax        c_min_dist   c_max_grace_gamma   f_AgAu[2]      f_AgCu[2]      f_AgIr[2]      f_AgNi[2]      f_AgPd[2]      f_AgPt[2]      f_AgRh[2]      f_AgRu[2]      f_AgSc[2]      f_AuCu[2]      f_AuIr[2]      f_AuNi[2]      f_AuPd[2]      f_AuPt[2]      f_AuRh[2]      f_AuRu[2]      f_AuSc[2]      f_CuIr[2]      f_CuNi[2]      f_CuPd[2]      f_CuPt[2]      f_CuRh[2]      f_CuRu[2]      f_CuSc[2]      f_IrNi[2]      f_IrPd[2]      f_IrPt[2]      f_IrRh[2]      f_IrRu[2]      f_IrSc[2]      f_NiPd[2]      f_NiPt[2]      f_NiRh[2]      f_NiRu[2]      f_NiSc[2]      f_PdPt[2]      f_PdRh[2]      f_PdRu[2]      f_PdSc[2]      f_PtRh[2]      f_PtRu[2]      f_PtSc[2]      f_RhRu[2]      f_RhSc[2]      f_RuSc[2]        Press          Volume          Pxx            Pyy            Pzz            Pxy            Pxz            Pyz      
+         0   0              1000          -3086.1518      0.4156571      2.4857964      0.70527898     0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              0              8285.9466      8432.0354      8067.2863      8278.0357      8512.5177     -277.69306      436.62123     -222.36755    
+        50   99.936933      447.45763     -3149.1814      2.8405673      2.1925473      0.8273596      9              0              0              0              5              0              0              0              9              4              0              2              6              0              0              0              9              0              8              5              6              0              0              7              3              1              0              3              8              8              2              6              3              0              4              5              0              0              6              1              0              5              8              2              0              4706.6634      8609.2575      4726.3286      4896.4195      4497.2421      391.17784     -126.52321     -992.86807    
+       100   93.577326      659.99439     -3173.9143      3.0629617      2.2027232      0.90252732     13             2              0              1              10             1              0              0              9              4              0              2              8              1              0              0              10             1              10             8              10             1              0              8              3              1              1              8              11             8              2              7              4              1              4              10             1              0              8              3              0              7              12             2              0              1825.447       8615.5089      3710.6675      4325.068      -2559.3946      502.31122      2510.4684     -1190.5531    
+       150   83.253958      675.60008     -3181.9368      3.3349611      2.2459365      0.88442008     17             2              0              1              12             1              0              0              10             4              0              2              10             1              0              0              11             1              14             8              10             2              0              9              3              1              1              10             15             8              2              8              6              2              4              12             1              0              8              6              1              7              14             2              0              992.79426      8595.9312      635.06646      480.9725       1862.3438     -823.62894     -433.20824     -3423.3043    
+       200   72.362916      654.99714     -3188.9325      3.4853938      2.2564664      0.87884736     21             2              0              1              13             1              0              0              11             4              1              2              11             1              0              0              11             1              17             9              12             3              0              10             3              1              1              15             16             8              2              10             6              2              4              14             1              0              8              9              1              7              18             2              0             -433.89331      8584.5007     -1975.6552     -2683.7959      3357.7711     -601.79339      1159.8087     -2804.9248    
+       250   60.671877      603.54662     -3191.4096      2.7520929      2.2667745      0.90690624     25             2              0              1              14             1              0              0              11             4              1              3              14             1              0              0              11             1              21             10             13             4              0              10             3              1              1              17             20             8              2              11             7              2              4              16             1              0              8              10             1              7              20             2              0             -1407.1308      8600.6802      1298.9758      95.218003     -5615.5861     -1499.5873      1194.8203     -631.97681    
+       300   48.702485      568.67157     -3195.137       2.3592331      2.2299146      0.83605555     28             2              0              1              15             2              0              0              12             4              1              3              14             1              0              0              11             1              23             11             14             4              0              10             4              1              1              23             25             8              2              11             7              3              4              17             1              0              8              11             1              7              23             2              0             -2552.5036      8596.849      -1335.746      -2186.8261     -4134.9387     -37.907109      2215.9146     -735.65185    
+       350   36.403815      559.93707     -3199.5988      2.4460503      2.2899425      0.8352011      29             2              0              1              17             2              1              0              12             4              1              3              16             1              0              0              11             1              26             11             14             4              0              10             4              1              1              28             27             8              2              11             7              3              4              18             1              0              8              11             1              7              24             2              0             -4026.5058      8581.2511     -7633.6262     -6645.0317      2199.1404     -568.03551      2166.9475     -264.30381    
+       400   24.172436      553.02421     -3204.1682      2.5553364      2.2935249      0.87545427     32             2              0              1              17             2              1              0              12             4              1              3              20             1              0              0              11             1              28             11             14             4              0              10             4              1              1              33             29             8              2              11             8              3              4              20             1              0              8              13             1              7              24             2              1             -4697.6128      8576.5194     -3798.0869     -1199.6735     -9095.078       870.67163      961.59423     -1009.4726    
+       450   12.075523      518.73187     -3207.4257      2.3508471      2.2525623      0.89653973     33             2              0              1              17             2              1              0              12             4              1              3              22             2              0              0              11             1              30             12             16             5              0              10             4              1              1              35             30             8              3              11             9              3              5              22             1              0              8              13             1              7              25             2              2             -3140.2472      8577.0448     -1351.3648     -2449.2701     -5620.1068     -170.62269     -416.7461      -144.40383    
+       500   0              493.75593     -3208.5082      2.5659231      2.3165265      0.83137109     36             2              0              1              17             2              1              0              12             4              1              3              24             2              0              0              11             1              31             13             17             6              0              10             4              1              1              39             35             8              3              11             11             3              5              23             1              0              8              15             1              7              27             2              2             -1496.3658      8567.0647     -2577.0879     -3867.671       1955.6617     -550.85266      69.479537     -202.93154    
+Loop time of 120.877 on 8 procs for 500 steps with 480 atoms
+
+Performance: 0.357 ns/day, 67.154 hours/ns, 4.136 timesteps/s, 1.985 katom-step/s
+99.9% CPU use with 8 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0013727  | 7.6273     | 10.614     | 124.5 |  6.31
+Neigh   | 0.000161   | 0.0070806  | 0.0097878  |   3.9 |  0.01
+Comm    | 0.25959    | 2.8092     | 7.4443     | 145.5 |  2.32
+Output  | 0.0037461  | 0.0040436  | 0.0042309  |   0.2 |  0.00
+Modify  | 109.66     | 110.43     | 113.42     |  11.0 | 91.35
+Other   |            | 0.0036     |            |       |  0.00
+
+Nlocal:             60 ave          80 max           0 min
+Histogram: 1 0 0 0 0 1 0 0 1 5
+Nghost:        1130.25 ave        1438 max         304 min
+Histogram: 1 0 0 1 0 0 1 0 0 5
+Neighs:        4244.62 ave        6017 max           0 min
+Histogram: 1 0 0 0 1 1 0 0 3 2
+FullNghs:      8489.25 ave       12096 max           0 min
+Histogram: 1 0 0 1 0 0 1 0 2 3
+
+Total # of neighbors = 67914
+Ave neighs/atom = 141.4875
+Neighbor list builds = 483
+Dangerous builds = 0
+
+unfix AgAu
+unfix AgCu
+unfix AgIr
+unfix AgNi
+unfix AgPd
+unfix AgPt
+unfix AgRh
+unfix AgRu
+unfix AgSc
+unfix AuCu
+unfix AuIr
+unfix AuNi
+unfix AuPd
+unfix AuPt
+unfix AuRh
+unfix AuRu
+unfix AuSc
+unfix CuIr
+unfix CuNi
+unfix CuPd
+unfix CuPt
+unfix CuRh
+unfix CuRu
+unfix CuSc
+unfix IrNi
+unfix IrPd
+unfix IrPt
+unfix IrRh
+unfix IrRu
+unfix IrSc
+unfix NiPd
+unfix NiPt
+unfix NiRh
+unfix NiRu
+unfix NiSc
+unfix PdPt
+unfix PdRh
+unfix PdRu
+unfix PdSc
+unfix PtRh
+unfix PtRu
+unfix PtSc
+unfix RhRu
+unfix RhSc
+unfix RuSc
+
+unfix mdmc_npt
+undump mdmc_dump
+
+
+thermo_style custom step cpuremain temp pe fmax c_min_dist  press vol pxx pyy pzz pxy pxz pyz
+WARNING: New thermo_style command, previous thermo_modify settings will be lost (src/output.cpp:904)
+write_data mdmc.lammps-data
+System init for write_data ...
+
+fix fix_print all print 1 "$(pe)" file mdmc.energy.dat
+run 0
+WARNING: No fixes with time integration, atoms won't move (src/verlet.cpp:60)
+-3208.5082253416876483
+Per MPI rank memory allocation (min/avg/max) = 3.725 | 3.922 | 3.956 Mbytes
+   Step        CPULeft          Temp          PotEng          Fmax        c_min_dist       Press          Volume          Pxx            Pyy            Pzz            Pxy            Pxz            Pyz      
+       500   0              493.75593     -3208.5082      2.5659231      2.3165265     -1496.3658      8567.0647     -2577.0879     -3867.671       1955.6617     -550.85266      69.479537     -202.93154    
+Loop time of 2.44762e-06 on 8 procs for 0 steps with 480 atoms
+
+132.8% CPU use with 8 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 2.448e-06  |            |       |100.00
+
+Nlocal:             60 ave          80 max           0 min
+Histogram: 1 0 0 0 0 1 0 0 1 5
+Nghost:        1125.88 ave        1432 max         301 min
+Histogram: 1 0 0 1 0 0 1 0 0 5
+Neighs:        4244.62 ave        6017 max           0 min
+Histogram: 1 0 0 0 1 1 0 0 3 2
+FullNghs:      8475.25 ave       12076 max           0 min
+Histogram: 1 0 0 1 0 0 1 0 2 3
+
+Total # of neighbors = 67802
+Ave neighs/atom = 141.25417
+Neighbor list builds = 0
+Dangerous builds = 0
+unfix fix_print
+
+Total wall time: 0:02:18
