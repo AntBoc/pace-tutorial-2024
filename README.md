@@ -1,5 +1,5 @@
 # pace-tutorial
-This repo contains files for tutorial on PACE and pacemaker
+This repo contains files for tutorial on P(GR)ACE and pace(grace)maker
 
 Tutorial slides [here](https://ruhr-uni-bochum.sciebo.de/s/gdgMmnPlv9d2IyM)
 
