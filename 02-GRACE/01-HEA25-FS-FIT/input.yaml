@@ -11,6 +11,7 @@ data:
 potential:
   #  elements: ["C", "H", "O"]
   preset: "FS" # FS, GRACE_1LAYER, GRACE_2LAYER
+  # kwargs: {n_rad_max: [20, 15, 10, 5], lmax: [5, 5, 4, 3], n_rad_base=20, rcut: 6, basis_type: "SBessel", max_order: 4}
 
 fit:
   #  strategy: mirrored # or -m flag
