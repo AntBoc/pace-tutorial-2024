@@ -232,7 +232,10 @@ lmp -in in.lammps
 Check out notebook `02-GRACE/02-HEA25-LAMMPS/Visualize_elemt_distrb.ipynb` for visualization of the
 elements distribution before and after the MDMC run. 
 
+## Links
+ACE users support [group](https://acesupport.zulipchat.com/join/tgxhoxi2v3q6ddzutae4sjfz/)
 
+Pacemaker (and gracemaker soon) [documentation](https://pacemaker.readthedocs.io/)
 
 # Further reading
 
