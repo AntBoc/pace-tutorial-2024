@@ -1,7 +1,7 @@
 # pace-tutorial
-This repo contains files for tutorial on P(GR)ACE and pace(grace)maker
+This repo contains files for tutorial on P(GR)ACE and p(gr)acemaker
 
-Tutorial slides [here](https://ruhr-uni-bochum.sciebo.de/s/gdgMmnPlv9d2IyM)
+Supporting slides [here](https://ruhr-uni-bochum.sciebo.de/s/nqjrW3vPIEI2ZFs)
 
 # Preparation
 
