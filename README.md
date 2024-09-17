@@ -47,8 +47,7 @@ git clone --depth 1 --branch grace https://github.com/yury-lysogorskiy/lammps.gi
 cd lammps/
 mkdir build
 cd build/
-cmake -DCMAKE_BUILD_TYPE=Release -D BUILD_MPI=ON
- -DPKG_ML-01-PACE=ON -DPKG_MC=ON -DPKG_MANYBODY=ON ../cmake
+cmake -DCMAKE_BUILD_TYPE=Release -D BUILD_MPI=ON -DPKG_ML-01-PACE=ON -DPKG_MC=ON -DPKG_MANYBODY=ON ../cmake
 
 # Check that you have line `TensorFlow library is FOUND at ...` after previous command
 
